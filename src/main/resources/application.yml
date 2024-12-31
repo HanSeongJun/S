@@ -1,1 +1,7 @@
-spring.application.name=SpringSecurityMaster
+# yml 파일에서 유저 생성
+spring:
+   security:
+     user:
+       name: user
+       password: 1111
+       roles: USER
