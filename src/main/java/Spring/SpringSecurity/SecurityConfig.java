@@ -27,36 +27,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(
-                        auth -> auth.anyRequest().authenticated()) // 모든 요청에 대해 인증이 필요
-                .formLogin(form -> form
-                        //.loginPage("/loginPage")
-                        .loginProcessingUrl("/loginProc")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/failed")
-                        .usernameParameter("userId")
-                        .passwordParameter("passwd")
-
-                        // 인증 성공 핸들러
-                        .successHandler((request, response, authentication) -> {
-                            System.out.println("authentication: " + authentication);
-                            response.sendRedirect("/home");
-                        })
-
-                        // 인증 실패 핸들러
-                        .failureHandler((request, response, exception) -> {
-                            System.out.println("exception: " + exception.getMessage());
-                            response.sendRedirect("/login");
-                        })
-                        .permitAll()
-                ); // 폼 기반 로그인 기능 활성화
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
 
     @Bean // 설정 파일에서 신규 유저 생성, 우선순위는 자바 설정 파일 > yml 파일
     public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user").password("{noop}1111").roles("USER").build();
+        UserDetails user = User
+                .withUsername("user")
+                .password("{noop}1111")
+                .roles("USER")
+                .build();
 
         return new InMemoryUserDetailsManager(user);
     }
